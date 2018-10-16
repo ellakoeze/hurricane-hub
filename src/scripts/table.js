@@ -5,13 +5,6 @@ const hurricanes = require('../data/hurricanes.json');
 
 import { DownloadCSV } from '../scripts/download.js';
 
-new DownloadCSV({
-  el: '#top-download',
-  data: hurricanes,
-  parent: '#top-download-container'
-});
-
-
 
 class Row extends React.Component {
   render() {
@@ -23,27 +16,24 @@ class Row extends React.Component {
   }
 }
 
+
 class Table extends React.Component {
 	constructor(props) {
 	    super(props);
-	    this.state={
-        data: props.data
-      };
-      
+      this.props = props;      
 	  }
 
   createRows(){
 
     this.rows =[];
-
-      for (var i=0; i<this.state.data.length; i++){
+      for (var i=0; i<this.props.data.length; i++){
         this.rows.push(e('tr', {className:"row", key: `row-${i}`},this.renderRow(i)));
       }
   }
 
   renderRow(i) {
     return e(Row,{
-    	value: this.state.data[i]
+    	value: this.props.data[i]
     }, null);
   }
 
@@ -53,6 +43,9 @@ class Table extends React.Component {
   }
 }
 
+
+
+
 class DataView extends React.Component {
     constructor(props) {
         super(props);
@@ -60,6 +53,12 @@ class DataView extends React.Component {
           data: hurricanes,
           direction: 'ascending'
         };
+
+        this.download = new DownloadCSV({
+                    el: '#lower-download',
+                    data: this.state.data,
+                    parent: '#lower-download-container'
+                  });
     }
 
   sort(param) {
@@ -80,11 +79,34 @@ class DataView extends React.Component {
     this.setState({data: data, direction: this.state.direction == 'ascending' ? 'descending' : 'ascending'});
   }
 
+  filter(event, param, end){
+
+    let val = event.target.value;
+    let filtered = this.state.data;
+
+    if (end =='min'){
+      filtered = this.state.data.filter((d)=>{return d[param] >= val;});
+    }
+    else{
+      filtered = this.state.data.filter((d)=>{return d[param] <= val;});
+    }
+
+    this.download.update(filtered);
+
+    this.setState({data: filtered, direction: this.state.direction});
+
+  }
+
+  clearFilter(){
+    this.setState({data: hurricanes});
+  }
 
   render() {
     return (
-      e('div', {className:"table-holder"},
-        e('table', {className:"table"},
+      e('div', {className:"table-holder"},[
+        e('input', {key: 'input',type: 'range', min: 1953, max:2017, onChange: (event)=>this.filter(event, 'Year', 'min')}),
+        e('button', {key: 'button', onClick: ()=>this.clearFilter()}, 'Reset'),
+        e('table', {key: 'table',className:"table"},
           e('thead', null,
               e('tr',null,[
                 e('th',{key: 'name', id:'name-header', onClick: ()=>this.sort('Name')}, 'Name'),
@@ -95,7 +117,7 @@ class DataView extends React.Component {
           e('tbody', null,
             e(Table,  {data: this.state.data})
           )
-        )
+        )]
       )
     );
   }

@@ -29,6 +29,11 @@ class DownloadCSV {
 
 	}
 
+	update(data){
+		this.opts.data = data;
+
+	}
+
 
 }
 
