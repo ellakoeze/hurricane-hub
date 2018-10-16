@@ -1,5 +1,36 @@
-$body-color: blue;
+@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,700');
+$body-color: #E2F7FF;
+$dark-blue: #4A5999;
+$white: #ffffff;
 
 body {
-  color: $body-color;
+  background-color: $body-color;
+  font-family: 'Libre Franklin', sans-serif;
+  width: 80%;
+  margin: 0 auto;
 }  
+
+a{
+	color: $dark-blue;
+	text-decoration: none;
+	width: 100%;
+	height: 100%;
+
+	&#top-download{
+		pointer-events: none;
+	}
+}
+
+
+
+.download-button{
+	transition: background-color 0.25s;
+	padding: 10px;
+	border: 1px solid $dark-blue;
+	width: 200px;
+	text-align: center;
+	&:hover{
+		background-color: $white;
+		cursor: pointer;
+	}
+}
