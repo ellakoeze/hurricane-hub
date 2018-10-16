@@ -15,7 +15,6 @@ new DownloadCSV({
 
 class Row extends React.Component {
   render() {
-    console.log(this.props.value);
     return [
         e('td',  {key: 'name'}, this.props.value.Name),
         e('td',{key: 'year'}, this.props.value.Year),
@@ -27,50 +26,75 @@ class Row extends React.Component {
 class Table extends React.Component {
 	constructor(props) {
 	    super(props);
-	    this.data = hurricanes;
-      this.createRows();
+	    this.state={
+        data: props.data
+      };
+      
 	  }
 
   createRows(){
 
     this.rows =[];
 
-      for (var i=0; i<this.data.length; i++){
-        this.rows.push(e('tr', {className:"row"},this.renderRow(i)));
+      for (var i=0; i<this.state.data.length; i++){
+        this.rows.push(e('tr', {className:"row", key: `row-${i}`},this.renderRow(i)));
       }
   }
 
   renderRow(i) {
     return e(Row,{
-    	value: this.data[i],
-    	onClick:() => this.handleClick(i)
+    	value: this.state.data[i]
     }, null);
   }
 
   render() {
+    this.createRows();
     return (this.rows);
   }
-
-  handleClick(i) {
-      const squares = this.state.squares.slice();
-      squares[i] = 'X';
-      this.setState({squares: squares});
-    }
 }
 
 class DataView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state={
+          data: hurricanes,
+          direction: 'ascending'
+        };
+    }
+
+  sort(param) {
+    const data = this.state.data.sort((a, b)=>{
+      if (this.state.direction == 'ascending'){
+
+        if(a[param] < b[param]) return -1;
+        if(a[param]> b[param]) return 1;
+        return 0;
+      }
+      else{
+        if(b[param] < a[param]) return -1;
+        if(b[param]> a[param]) return 1;
+        return 0;
+      }
+    });
+    
+    this.setState({data: data, direction: this.state.direction == 'ascending' ? 'descending' : 'ascending'});
+  }
+
+
   render() {
     return (
       e('div', {className:"table-holder"},
         e('table', {className:"table"},
-          e('thead', null,[
-            e('th',null, 'Name'),
-            e('th', null, 'Year'),
-            e('th',null, 'Month')
-            ]),
+          e('thead', null,
+              e('tr',null,[
+                e('th',{key: 'name', id:'name-header', onClick: ()=>this.sort('Name')}, 'Name'),
+                e('th', {key: 'year', id:'year-header', onClick: ()=>this.sort('Year')}, 'Year'),
+                e('th',{key: 'month', id: 'month-header', onClick: ()=>this.sort('Month')}, 'Month')
+              ])
+          ),
           e('tbody', null,
-          e(Table)
-        )
+            e(Table,  {data: this.state.data})
+          )
         )
       )
     );
