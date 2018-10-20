@@ -5,6 +5,7 @@ const topojson =  require("topojson-client");
 const topojsonS =  require("topojson-server");
 const hurricanes = require('../data/hurricanes.json');
 const hurricaneShapes = require('../data/hurricanes.topo.json');
+const hurricaneFeatures = topojson.feature(hurricaneShapes, hurricaneShapes.objects.hurricanes).features;
 
 import { DownloadCSV } from '../scripts/download.js';
 import { ZoomMap} from '../scripts/map.js';
@@ -46,31 +47,34 @@ class DataView extends React.Component {
     this.setState({data: data, direction: this.state.direction == 'ascending' ? 'descending' : 'ascending'});
   }
 
-  filter(event, param, end){
+  filter(){
 
-    let val = event.target.value;
-    let filtered = this.state.data;
-    let filteredShapes = this.state.shapes;
-    let hurricanes = topojson.feature(this.state.shapes, this.state.shapes.objects.hurricanes).features;
-    let filteredHurricanes = hurricanes;
+    ///collect all parameters here regardless of which one was last used!
+    let minYear = document.getElementById('min-year').value;
+    let maxYear = document.getElementById('max-year').value;
+
+    //starting variables
+    let filtered;
+    let filteredShapes;
+    let filteredHurricanes;
+
+    //run all filters on table data, starting with full set
+    filtered = hurricanes.filter((d)=>{return d.Year >= minYear;});
+    filtered = filtered.filter((d)=>{return d.Year <= maxYear;});
+
+    //run all filters on map data, starting with full set
+    filteredHurricanes =  hurricaneFeatures.filter((d)=>{return d.properties.Year >= minYear;});
+    filteredHurricanes =  filteredHurricanes.filter((d)=>{return d.properties.Year <= maxYear;});
 
 
-    if (end =='min'){
-      filtered = this.state.data.filter((d)=>{return d[param] >= val;});
-      filteredHurricanes =  hurricanes.filter((d)=>{return d.properties[param] >= val;});
-    }
-    else if (end =='max'){
-      filtered = this.state.data.filter((d)=>{return d[param] <= val;});
-      filteredHurricanes =  hurricanes.filter((d)=>{return d.properties[param] <= val;});
 
-    }
-    else if(end == 'contains'){
-
-
-    }
-
+    //send filtered data to download button
     this.download.update(filtered);
+
+    //turn filtered features back into topojson
     filteredShapes = topojsonS.topology({hurricanes: {type: 'FeatureCollection', features: filteredHurricanes}});
+
+    //change state!
     this.setState({data: filtered, direction: this.state.direction, shapes: filteredShapes});
 
   }
@@ -84,8 +88,8 @@ class DataView extends React.Component {
       e('div', {className:"data-view"},[
         e('div', {key: 'row-wrapper',className: 'row-wrapper'}, 
           e('div',{key: 'form-wrapper', className: 'form-wrapper'},
-            e('input', {key: 'input-1',type: 'range', min: 1953, max:2017, defaultValue: 1953, onChange: (event)=>this.filter(event, 'Year', 'min')}),
-            e('input', {key: 'input-2',type: 'range', min: 1953, max:2017, defaultValue: 2017, onChange: (event)=>this.filter(event, 'Year', 'max')}),
+            e('input', {key: 'input-1',type: 'range', min: 1953, max:2017, id: 'min-year',defaultValue: 1953, onChange: (event)=>this.filter()}),
+            e('input', {key: 'input-2',type: 'range', min: 1953, max:2017, id: 'max-year', defaultValue: 2017, onChange: (event)=>this.filter()}),
             e('button', {key: 'button', onClick: ()=>this.clearFilter()}, 'Reset')
           ),
           e(ZoomMap, {key: 'map',shapes: this.state.shapes})
