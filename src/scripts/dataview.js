@@ -1,6 +1,8 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const e = React.createElement;
+const topojson =  require("topojson-client");
+const topojsonS =  require("topojson-server");
 const hurricanes = require('../data/hurricanes.json');
 const hurricaneShapes = require('../data/hurricanes.topo.json');
 
@@ -15,7 +17,8 @@ class DataView extends React.Component {
         super(props);
         this.state={
           data: hurricanes,
-          direction: 'ascending'
+          direction: 'ascending',
+          shapes: hurricaneShapes
         };
 
         this.download = new DownloadCSV({
@@ -47,31 +50,40 @@ class DataView extends React.Component {
 
     let val = event.target.value;
     let filtered = this.state.data;
+    let filteredShapes = this.state.shapes;
+    let hurricanes = topojson.feature(this.state.shapes, this.state.shapes.objects.hurricanes).features;
+    let filteredHurricanes = hurricanes;
+
 
     if (end =='min'){
       filtered = this.state.data.filter((d)=>{return d[param] >= val;});
+      filteredHurricanes =  hurricanes.filter((d)=>{return d.properties[param] >= val;});
     }
     else{
       filtered = this.state.data.filter((d)=>{return d[param] <= val;});
+      // filteredShapes = this.state.shapes.filter((d)=>{return d.properties[param] <= val;});
+
     }
 
     this.download.update(filtered);
 
-    this.setState({data: filtered, direction: this.state.direction});
+    filteredShapes = topojsonS.topology({hurricanes: {type: 'FeatureCollection', features: filteredHurricanes}});
+
+    this.setState({data: filtered, direction: this.state.direction, shapes: filteredShapes});
 
   }
 
   clearFilter(){
-    this.setState({data: hurricanes});
+    this.setState({data: hurricanes, shapes: hurricaneShapes});
   }
 
   render() {
     return (
       e('div', {className:"data-view"},[
-        e('div', {class: 'row-wrapper'}, 
+        e('div', {key: 'row-wrapper',className: 'row-wrapper'}, 
           e('input', {key: 'input',type: 'range', min: 1953, max:2017, onChange: (event)=>this.filter(event, 'Year', 'min')}),
           e('button', {key: 'button', onClick: ()=>this.clearFilter()}, 'Reset'),
-          e(ZoomMap, {shapes: hurricaneShapes})
+          e(ZoomMap, {key: 'map',shapes: this.state.shapes})
         ),
         e('table', {key: 'table',className:"table"},
           e('thead', null,
