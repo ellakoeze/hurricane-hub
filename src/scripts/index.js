@@ -5,8 +5,7 @@ const e = React.createElement;
 const hurricanes = require('../data/hurricanes.json');
 
 
-import { DataView } from '../scripts/table.js';
-import { ZoomMap} from '../scripts/map.js';
+import { DataView } from '../scripts/dataview.js';
 import { DownloadCSV } from '../scripts/download.js';
 
 new DownloadCSV({
@@ -24,5 +23,3 @@ ReactDOM.render(
 );
 
 
-
-ReactDOM.render(e(ZoomMap), document.getElementById('map'));

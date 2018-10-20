@@ -34,3 +34,17 @@ a{
 		cursor: pointer;
 	}
 }
+
+.row-wrapper{
+	display: flex;
+	width: 100%;
+}
+
+#map{
+	background-color: #ffffff;	
+	width: 50%;
+}
+
+.hurricane{
+	stroke: #f0f;
+}
