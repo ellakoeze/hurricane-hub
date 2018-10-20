@@ -59,16 +59,18 @@ class DataView extends React.Component {
       filtered = this.state.data.filter((d)=>{return d[param] >= val;});
       filteredHurricanes =  hurricanes.filter((d)=>{return d.properties[param] >= val;});
     }
-    else{
+    else if (end =='max'){
       filtered = this.state.data.filter((d)=>{return d[param] <= val;});
-      // filteredShapes = this.state.shapes.filter((d)=>{return d.properties[param] <= val;});
+      filteredHurricanes =  hurricanes.filter((d)=>{return d.properties[param] <= val;});
+
+    }
+    else if(end == 'contains'){
+
 
     }
 
     this.download.update(filtered);
-
     filteredShapes = topojsonS.topology({hurricanes: {type: 'FeatureCollection', features: filteredHurricanes}});
-
     this.setState({data: filtered, direction: this.state.direction, shapes: filteredShapes});
 
   }
@@ -81,8 +83,11 @@ class DataView extends React.Component {
     return (
       e('div', {className:"data-view"},[
         e('div', {key: 'row-wrapper',className: 'row-wrapper'}, 
-          e('input', {key: 'input',type: 'range', min: 1953, max:2017, onChange: (event)=>this.filter(event, 'Year', 'min')}),
-          e('button', {key: 'button', onClick: ()=>this.clearFilter()}, 'Reset'),
+          e('div',{key: 'form-wrapper', className: 'form-wrapper'},
+            e('input', {key: 'input-1',type: 'range', min: 1953, max:2017, defaultValue: 1953, onChange: (event)=>this.filter(event, 'Year', 'min')}),
+            e('input', {key: 'input-2',type: 'range', min: 1953, max:2017, defaultValue: 2017, onChange: (event)=>this.filter(event, 'Year', 'max')}),
+            e('button', {key: 'button', onClick: ()=>this.clearFilter()}, 'Reset')
+          ),
           e(ZoomMap, {key: 'map',shapes: this.state.shapes})
         ),
         e('table', {key: 'table',className:"table"},
