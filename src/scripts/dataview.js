@@ -6,6 +6,8 @@ const topojsonS =  require("topojson-server");
 const hurricanes = require('../data/hurricanes.json');
 const hurricaneShapes = require('../data/hurricanes.topo.json');
 const hurricaneFeatures = topojson.feature(hurricaneShapes, hurricaneShapes.objects.hurricanes).features;
+const countryShapes = require('../data/ne_110m_admin_0_countries.topo.json');
+const countryFeatures = topojson.feature(countryShapes, countryShapes.objects.ne_110m_admin_0_countries).features;
 
 import { DownloadCSV } from '../scripts/download.js';
 import { ZoomMap} from '../scripts/map.js';
@@ -23,7 +25,8 @@ class DataView extends React.Component {
             return 0;
           }),
           direction: 'ascending',
-          shapes: hurricaneShapes
+          shapes: hurricaneShapes,
+          countries: countryShapes
         };
 
         this.download = new DownloadCSV({
@@ -99,7 +102,7 @@ class DataView extends React.Component {
             e('input', {key: 'input-2',type: 'range', min: 1953, max:2017, id: 'max-year', defaultValue: 2017, onChange: (event)=>this.filter()}),
             e('button', {key: 'button', onClick: ()=>this.clearFilter()}, 'Reset')
           ),
-          e(ZoomMap, {key: 'map',shapes: this.state.shapes})
+          e(ZoomMap, {key: 'map',shapes: this.state.shapes, countries: this.state.countries})
         ),
         e('table', {key: 'table',className:"table"},
           e('thead', null,

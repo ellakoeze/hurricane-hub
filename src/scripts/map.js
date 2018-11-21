@@ -7,7 +7,8 @@ const reactMap = require('react-simple-maps');
 class ZoomMap extends React.Component {
   constructor(props) {
     super(props);
-    this.props = props;     
+    this.props = props;  
+    console.log(this.props);
   }
   render() {
     return(
@@ -20,6 +21,17 @@ class ZoomMap extends React.Component {
           precision: 0.1,
           }}, 
           e(reactMap.ZoomableGroup, null, 
+            e(reactMap.Geographies, {geography:this.props.countries}, 
+              (geographies, projection) => geographies.map(geography => (
+                e(reactMap.Geography, { 
+                  key:geography.properties.ADMIN,
+                  id: geography.properties.ADMIN,
+                  className: 'country',
+                  geography: geography,
+                  projection: projection}
+                )
+              ))
+            ),
             e(reactMap.Geographies, {geography:this.props.shapes}, 
               (geographies, projection) => geographies.map(geography => (
                 e(reactMap.Geography, { 
