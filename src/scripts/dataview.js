@@ -17,7 +17,11 @@ class DataView extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-          data: hurricanes,
+          data: hurricanes.sort((a, b)=>{
+            if(a.Year < b.Year) return 1;
+            if(a.Year> b.Year) return -1;
+            return 0;
+          }),
           direction: 'ascending',
           shapes: hurricaneShapes
         };
@@ -30,6 +34,9 @@ class DataView extends React.Component {
     }
 
   sort(param) {
+    document.getElementsByClassName("active")[0].classList.remove("active");
+    document.getElementById(param).classList.add("active");
+
     const data = this.state.data.sort((a, b)=>{
       if (this.state.direction == 'ascending'){
 
@@ -97,9 +104,12 @@ class DataView extends React.Component {
         e('table', {key: 'table',className:"table"},
           e('thead', null,
               e('tr',null,[
-                e('th',{key: 'name', id:'name-header', onClick: ()=>this.sort('Name')}, 'Name'),
-                e('th', {key: 'year', id:'year-header', onClick: ()=>this.sort('Year')}, 'Year'),
-                e('th',{key: 'month', id: 'month-header', onClick: ()=>this.sort('Month')}, 'Month')
+                e('th',{key: 'name', id:'Name', onClick: ()=>this.sort('Name')}, 'Name'),
+                e('th', {key: 'year', id:'Year', className: 'active', onClick: ()=>this.sort('Year')}, 'Year'),
+                e('th',{key: 'month', id: 'Month', onClick: ()=>this.sort('Month')}, 'Month'),
+                e('th',{key: 'cat', id: 'Max_category_at_landfall', onClick: ()=>this.sort('Max_category_at_landfall')}, 'Max. category at landfall'),
+                e('th',{key: 'wind', id: 'Max_windspeed', onClick: ()=>this.sort('Max_windspeed')}, 'Max. windspeed (mph)'),
+                e('th',{key: 'rain', id: 'max_amount_rainfall', onClick: ()=>this.sort('max_amount_rainfall')}, 'Max. rainfall (in)')
               ])
           ),
           e('tbody', null,

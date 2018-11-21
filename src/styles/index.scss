@@ -53,3 +53,30 @@ a{
 .hurricane{
 	stroke: #f0f;
 }
+
+table{
+	border-collapse: collapse;
+	th{
+		border-bottom: 1px solid black;
+		font-size: 12px;
+		text-transform: uppercase;
+		font-weight: 400;
+		cursor: pointer;
+		padding: 3px;
+		&:hover{
+			background-color: #95E2FF;
+		}
+		&.active{
+			background-color: $white;
+		}
+	}
+	td{
+		border-right: 1px $body-color solid;
+		border-bottom: 1px $body-color solid;
+		width: 10%;
+		max-width: 200px;
+		padding: 5px;
+		background-color: $white;
+	}
+
+}
