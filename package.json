@@ -66,6 +66,7 @@
     "babel-polyfill": "^6.26.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
+    "react-motion": "^0.5.2",
     "react-simple-maps": "^0.12.1",
     "topojson-client": "^3.0.0",
     "topojson-server": "^3.0.0",
