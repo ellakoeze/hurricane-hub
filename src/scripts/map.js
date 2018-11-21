@@ -8,19 +8,39 @@ class ZoomMap extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;  
-    console.log(this.props);
+    this.state = {
+      zoom: 1
+    };
+
+    this.handleZoomIn = this.handleZoomIn.bind(this);
+    this.handleZoomOut = this.handleZoomOut.bind(this);
   }
+
+  handleZoomIn() {
+    this.setState({
+      zoom: this.state.zoom +1
+    });
+  }
+
+  handleZoomOut() {
+    this.setState({
+      zoom: this.state.zoom /2
+    });
+  }
+
   render() {
     return(
       e('div', {id: 'map'} ,
-        e(reactMap.ComposableMap, {width: 500, projection: 'robinson', projectionConfig: {
+        e('button', {onClick: ()=>this.handleZoomIn()}, "Zoom in"),
+        e('button', {onClick: ()=>this.handleZoomOut()}, "Zoom out"),
+        e(reactMap.ComposableMap, {projection: 'robinson', projectionConfig: {
           scale: 200,
           xOffset: 100,
           yOffset: 50,
           rotation: [0,0,0],
           precision: 0.1,
           }}, 
-          e(reactMap.ZoomableGroup, null, 
+          e(reactMap.ZoomableGroup, {center:[50,-5], zoom:this.state.zoom}, 
             e(reactMap.Geographies, {geography:this.props.countries}, 
               (geographies, projection) => geographies.map(geography => (
                 e(reactMap.Geography, { 
@@ -28,8 +48,15 @@ class ZoomMap extends React.Component {
                   id: geography.properties.ADMIN,
                   className: 'country',
                   geography: geography,
-                  projection: projection}
-                )
+                  projection: projection,
+                  style:{
+                    hover: {
+                      stroke: "#000000",
+                      strokeWidth: 0.75,
+                      outline: "none"
+                    }
+                  }
+                })
               ))
             ),
             e(reactMap.Geographies, {geography:this.props.shapes}, 
