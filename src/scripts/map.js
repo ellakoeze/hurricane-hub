@@ -10,8 +10,9 @@ class ZoomMap extends React.Component {
     super(props);
     this.props = props;  
     this.state = {
-      zoom: 1,
-      center: [50,-5]
+      zoom: 1.5,
+      center: [0,10],
+      panning: false
     };
 
     this.handleZoomIn = this.handleZoomIn.bind(this);
@@ -20,32 +21,36 @@ class ZoomMap extends React.Component {
 
   handleZoomIn() {
     this.setState({
-      zoom: this.state.zoom *1.25
+      zoom: this.state.zoom *1.25,
+      panning: false
     });
   }
 
   handleDoubleClick() {
     this.setState({
-      zoom: this.state.zoom *2
+      zoom: this.state.zoom *2,
+      panning: false
     });
   }
 
   handleZoomOut() {
     this.setState({
-      zoom: this.state.zoom >1 ? this.state.zoom /1.25 : 1
+      zoom: this.state.zoom >1 ? this.state.zoom /1.25 : 1,
+      panning: this.state.zoom >1 ? false : true
     });
   }
 
   handleZoomOutAllTheWay() {
+    let newCenter = this.state.center[1] == 10 ? [0,9] :[0,10];
     this.setState({
-      zoom: 1,
-      center: [50,-5]
+      zoom: 1.5,
+      center: newCenter,
+      panning: false
     });
   }
 
   clickHurricane(storm) {
     document.getElementById(storm).classList.add('selected');
-    console.log(storm);
   }
 
   render() {
@@ -67,7 +72,7 @@ class ZoomMap extends React.Component {
                 yOffset: 50,
                 rotation: [-10,0,0]
                 }}, 
-                e(reactMap.ZoomableGroup, {center:[x,y], zoom:zoom}, 
+                e(reactMap.ZoomableGroup, {disablePanning: this.state.panning, center:[x,y], zoom:zoom}, 
                   e(reactMap.Geographies, {geography:this.props.countries}, 
                     (geographies, projection) => geographies.map(geography => (
                       e(reactMap.Geography, { 
@@ -107,25 +112,25 @@ class ZoomMap extends React.Component {
                         className: 'hurricane',
                         geography: geography,
                         projection: projection,
-                        onClick: ()=>this.clickHurricane(geography.properties.ID2),
+                        // onClick: ()=>this.clickHurricane(geography.properties.ID2),
                         style:{
                           default: {
-                          stroke: "#1F2ECC",
+                          stroke: "#F87903",
                           strokeWidth: 1,
                           outline: "none",
-                          opacity: 0.75,
+                          opacity: 0.5,
                           strokeLinecap: "round"
                           },
                           hover: {
-                            stroke: "#F87903",
+                            stroke: "#1F2ECC",
                             strokeWidth: 2,
                             outline: "none",
-                            cursor: "pointer",
+                            cursor: "crosshair",
                             opacity: 1,
                             strokeLinecap: "round"
                           },
                           pressed: {
-                            stroke: "#F87903",
+                            stroke: "#1F2ECC",
                             strokeWidth: 2,
                             outline: "none",
                             opacity: 1,
