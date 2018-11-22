@@ -17,6 +17,13 @@ class ZoomMap extends React.Component {
 
     this.handleZoomIn = this.handleZoomIn.bind(this);
     this.handleZoomOut = this.handleZoomOut.bind(this);
+    this.colors ={
+      cat5: 'red',
+      cat4: 'orange',
+      cat3: 'yellow',
+      cat2: 'green',
+      cat1: 'blue;'
+    };
   }
 
   handleZoomIn() {
@@ -62,9 +69,7 @@ class ZoomMap extends React.Component {
           e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomOutAllTheWay()}, "Reset zoom")),
         e('div', {id: 'map', onDoubleClick:()=>this.handleDoubleClick()},
           e(Motion, {defaultStyle:{zoom: 1, x: 0, y: 20},
-                       style:{zoom: spring(this.state.zoom, {stiffness: 210, damping: 20}),
-                              x: spring(this.state.center[0], {stiffness: 210, damping: 20}),
-                              y: spring(this.state.center[1], {stiffness: 210, damping: 20})}},
+                     style:{zoom: spring(this.state.zoom, {stiffness: 120, damping: 17})}},
             ({zoom,x,y}) => (
               e(reactMap.ComposableMap, {projection: 'robinson', projectionConfig: {
                 scale: 200,
@@ -72,7 +77,7 @@ class ZoomMap extends React.Component {
                 yOffset: 50,
                 rotation: [-10,0,0]
                 }}, 
-                e(reactMap.ZoomableGroup, {disablePanning: this.state.panning, center:[x,y], zoom:zoom}, 
+                e(reactMap.ZoomableGroup, {disablePanning: this.state.panning, center:this.state.center, zoom:zoom}, 
                   e(reactMap.Geographies, {geography:this.props.countries}, 
                     (geographies, projection) => geographies.map(geography => (
                       e(reactMap.Geography, { 
@@ -116,9 +121,9 @@ class ZoomMap extends React.Component {
                         style:{
                           default: {
                           stroke: "#F87903",
-                          strokeWidth: 1,
+                          strokeWidth: 0.5,
                           outline: "none",
-                          opacity: 0.5,
+                          opacity: 1,
                           strokeLinecap: "round"
                           },
                           hover: {
