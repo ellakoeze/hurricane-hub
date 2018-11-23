@@ -124,7 +124,14 @@ class DataView extends React.Component {
 
   clearFilter(){
     this.setState({data: hurricanes, shapes: hurricaneShapes});
+    let textDiv = document.getElementById('text');
+    textDiv.innerHTML= ''; 
+    let selected = document.getElementsByClassName('selected')[0];
 
+    if(selected){
+      selected.classList.remove('selected');
+    }
+    
   }
 
   render() {
