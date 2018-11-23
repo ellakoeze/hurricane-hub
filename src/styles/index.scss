@@ -8,6 +8,7 @@ body {
   font-family: 'Libre Franklin', sans-serif;
   width: 80%;
   margin: 0 auto;
+  color: $dark-blue;
 }  
 
 .section-1{
@@ -161,10 +162,12 @@ table{
 		cursor: pointer;
 		padding: 3px;
 		&:hover{
-			background-color: #95E2FF;
+			background-color: $dark-blue;
+			color: $white;
 		}
 		&.active{
 			background-color: $white;
+			color: $dark-blue;
 		}
 	}
 	td{
@@ -174,6 +177,16 @@ table{
 		max-width: 200px;
 		padding: 5px;
 		background-color: $white;
+	}
+	tbody{
+		tr{
+			&:hover{
+				td{
+					background-color: $dark-blue;
+					color: $white;
+				}
+			}
+		}
 	}
 
 }
