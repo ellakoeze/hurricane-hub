@@ -24,6 +24,8 @@ class ZoomMap extends React.Component {
       cat2: 'green',
       cat1: 'blue;'
     };
+
+    this.hoverable = true;
   }
 
   handleZoomIn() {
@@ -56,8 +58,42 @@ class ZoomMap extends React.Component {
     });
   }
 
-  clickHurricane(storm) {
+  hoverHurricane(storm) {
+    if (!this.hoverable){
+      return;
+    }
+    let textDiv = document.getElementById('text');                              
+    textDiv.innerHTML= storm; 
+
+  }
+
+  leaveHurricane() {
+    if (!this.hoverable){
+      return;
+    }
+    let textDiv = document.getElementById('text');
+    textDiv.innerHTML= ''; 
+    
+
+  }
+
+  clickHurricane(storm) { 
     document.getElementById(storm).classList.add('selected');
+    let textDiv = document.getElementById('text');                              
+    textDiv.innerHTML= storm +'<div id="ex" >X</div>';
+
+    this.hoverable = false;
+    this.clearSelection();
+
+  }
+
+  clearSelection(){
+    let textDiv = document.getElementById('text');
+    document.getElementById('ex').addEventListener('click', ()=>{
+      textDiv.innerHTML= ''; 
+      this.hoverable = true;
+      document.getElementsByClassName('selected')[0].classList.remove('selected');
+    });
   }
 
   render() {
@@ -66,7 +102,8 @@ class ZoomMap extends React.Component {
         e('div', {id: 'button-wrap'} , null,
           e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomIn()}, "Zoom in"),
           e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomOut()}, "Zoom out"),
-          e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomOutAllTheWay()}, "Reset zoom")),
+          e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomOutAllTheWay()}, "Reset zoom"),
+          e('div', {id: 'text'})),
         e('div', {id: 'map', onDoubleClick:()=>this.handleDoubleClick()},
           e(Motion, {defaultStyle:{zoom: 1, x: 0, y: 20},
                      style:{zoom: spring(this.state.zoom, {stiffness: 120, damping: 17})}},
@@ -117,30 +154,18 @@ class ZoomMap extends React.Component {
                         className: 'hurricane',
                         geography: geography,
                         projection: projection,
-                        // onClick: ()=>this.clickHurricane(geography.properties.ID2),
+                        onClick: ()=>this.clickHurricane(geography.properties.ID2),
+                        onMouseMove: ()=>this.hoverHurricane(geography.properties.ID2),
+                        onMouseLeave: ()=>this.leaveHurricane(),
                         style:{
                           default: {
-                          stroke: "#F87903",
+                          stroke:  "#F87903",
                           strokeWidth: 0.5,
                           outline: "none",
                           opacity: 1,
                           strokeLinecap: "round"
-                          },
-                          hover: {
-                            stroke: "#1F2ECC",
-                            strokeWidth: 2,
-                            outline: "none",
-                            cursor: "crosshair",
-                            opacity: 1,
-                            strokeLinecap: "round"
-                          },
-                          pressed: {
-                            stroke: "#1F2ECC",
-                            strokeWidth: 2,
-                            outline: "none",
-                            opacity: 1,
-                            strokeLinecap: "round"
-                          }}}
+                          }
+                        }}
                       )
                     ))
                   )

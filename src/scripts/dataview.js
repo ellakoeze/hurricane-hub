@@ -12,7 +12,7 @@ const countryFeatures = topojson.feature(countryShapes, countryShapes.objects.ne
 import { DownloadCSV } from '../scripts/download.js';
 import { ZoomMap} from '../scripts/map.js';
 import {Table} from '../scripts/table.js';
-
+import {Options} from '../scripts/select.js';
 
 
 class DataView extends React.Component {
@@ -34,7 +34,25 @@ class DataView extends React.Component {
                     data: this.state.data,
                     parent: '#lower-download-container'
                   });
+
+        this.dataArrange();
+
+  }
+
+  dataArrange(){
+
+    this.years = [];
+    this.yearsReverse =[];
+
+    for (var obj of hurricanes) {
+      if(this.years.indexOf(obj.Year) == -1){
+        this.years.push(obj.Year);
+        this.yearsReverse.push(obj.Year);
+      }
     }
+
+    this.yearsReverse.reverse();
+  }
 
   sort(param) {
     document.getElementsByClassName("active")[0].classList.remove("active");
@@ -62,6 +80,9 @@ class DataView extends React.Component {
     ///collect all parameters here regardless of which one was last used!
     let minYear = document.getElementById('min-year').value;
     let maxYear = document.getElementById('max-year').value;
+    let minCat = document.getElementById('min-cat').value;
+    let maxCat = document.getElementById('max-cat').value;
+
 
     //starting variables
     let filtered;
@@ -71,12 +92,14 @@ class DataView extends React.Component {
     //run all filters on table data, starting with full set
     filtered = hurricanes.filter((d)=>{return d.Year >= minYear;});
     filtered = filtered.filter((d)=>{return d.Year <= maxYear;});
+    filtered = filtered.filter((d)=>{return d.Max_category_at_landfall <= maxCat;});
+    filtered = filtered.filter((d)=>{return d.Max_category_at_landfall >= minCat;});
 
     //run all filters on map data, starting with full set
     filteredHurricanes =  hurricaneFeatures.filter((d)=>{return d.properties.Year >= minYear;});
     filteredHurricanes =  filteredHurricanes.filter((d)=>{return d.properties.Year <= maxYear;});
-
-
+    filteredHurricanes =  filteredHurricanes.filter((d)=>{return d.properties.Max_catego<= maxCat;});
+    filteredHurricanes =  filteredHurricanes.filter((d)=>{return d.properties.Max_catego>= minCat;});
 
     //send filtered data to download button
     this.download.update(filtered);
@@ -91,17 +114,42 @@ class DataView extends React.Component {
 
   clearFilter(){
     this.setState({data: hurricanes, shapes: hurricaneShapes});
+
   }
 
   render() {
     return (
       e('div', {className:"data-view"},[
-        e('div', {key: 'row-wrapper',className: 'row-wrapper'}, 
+        e('div', {key: 'row-1',className: 'row-wrapper'}, 
           e('div',{key: 'form-wrapper', className: 'form-wrapper'},
-            e('input', {key: 'input-1',type: 'range', min: 1953, max:2017, id: 'min-year',defaultValue: 1953, onChange: (event)=>this.filter()}),
-            e('input', {key: 'input-2',type: 'range', min: 1953, max:2017, id: 'max-year', defaultValue: 2017, onChange: (event)=>this.filter()}),
-            e('button', {key: 'button', onClick: ()=>this.clearFilter()}, 'Reset')
-          ),
+            e('div', {key: 'button-section-1', className: 'button-section'}, 
+              e('div', {key: 'button-wrap-1'}, 
+                e('p', {key: 'label-1', className: 'button-label'}, 'Earliest year'),
+                e('select', {key: 'select-1', id: 'min-year', className: 'select', onChange: (event)=>this.filter()}, 
+                  e(Options, {data: this.yearsReverse}))
+              ),
+              e('div', {key: 'button-wrap-2'}, 
+                e('p', {key: 'label-2', className: 'button-label'}, 'Latest year'),
+                e('select', {key: 'select-2', id: 'max-year', className: 'select', onChange: (event)=>this.filter()}, 
+                  e(Options, {data: this.years}))
+              )
+            ),
+            e('div', {key: 'button-section-2', className: 'button-section'}, 
+              e('div', {key: 'button-wrap-1'}, 
+                e('p', {key: 'label-1', className: 'button-label'}, 'Minimum category'),
+                e('select', {key: 'select-1', id: 'min-cat', className: 'select', onChange: (event)=>this.filter()}, 
+                  e(Options, {data: [1,2,3,4,5]}))
+              ),
+              e('div', {key: 'button-wrap-2'}, 
+                e('p', {key: 'label-2', className: 'button-label'}, 'Maximum category'),
+                e('select', {key: 'select-2', id: 'max-cat', className: 'select', onChange: (event)=>this.filter()}, 
+                  e(Options, {data: [5,4,3,2,1]}))
+              )
+            ),
+            e('button', {key: 'button', className: 'reset-button', onClick: ()=>this.clearFilter()}, 'Reset filters')
+          )
+        ),
+        e('div', {key: 'row-2',className: 'row-wrapper'}, 
           e(ZoomMap, {key: 'map',shapes: this.state.shapes, countries: this.state.countries})
         ),
         e('table', {key: 'table',className:"table"},

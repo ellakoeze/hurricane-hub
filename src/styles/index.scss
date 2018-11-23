@@ -10,6 +10,10 @@ body {
   margin: 0 auto;
 }  
 
+.section-1{
+	display: flex;
+}
+
 a{
 	color: $dark-blue;
 	text-decoration: none;
@@ -21,33 +25,40 @@ a{
 	}
 }
 
-button{
-	outline: none;
-}
-
 .download-button{
+	margin: 0px 5px 0px 0px;
+	outline: none;
 	transition: background-color 0.25s;
 	padding: 10px;
 	border: 1px solid $dark-blue;
 	width: 200px;
 	text-align: center;
+	background-color: $white;
+	color: $dark-blue;
 	&:hover{
-		background-color: $white;
+		background-color: $dark-blue;
 		cursor: pointer;
+		a{
+			color: $white !important;
+		}
 	}
 }
 
-.zoom-button{
+
+.zoom-button, .reset-button, .select{
+	outline: none;
 	transition: background-color 0.25s;
 	padding: 5px 10px;
 	margin: 0 2.5px 5px 0;
 	border: 1px solid $dark-blue;
 	text-align: center;
-	background-color: $body-color;
+	background-color: $white;
 	color: $dark-blue;
+	font-size: 16px;
 	&:hover{
-		background-color: $white;
+		background-color: $dark-blue;
 		cursor: pointer;
+		color: $white;
 	}
 
 
@@ -61,8 +72,44 @@ button{
 .form-wrapper{
 	display:block;
 	width: 50%;
+	margin-bottom: 40px;
 }
 
+.button-section{
+	display: flex;
+	padding-bottom: 12px;
+	border-bottom: 1px solid $white;
+}
+
+.button-label{
+	font-size: 12px;
+	text-transform: uppercase;
+	font-weight: 400;
+	width: 200px;
+}
+
+#button-wrap{
+	display: flex;
+
+}
+#text{
+	display: flex;
+}
+
+#ex{
+	background-color: $white;
+	width: 20px;
+	height: 20px;
+	border-radius: 1em;
+	border: solid 1px $dark-blue;
+	text-align: center;	
+	color: $dark-blue;
+	cursor: pointer;
+	&:hover{
+		background-color: $dark-blue;
+		color: $white;
+	}
+}
 #map{
 	background-color: #FFF0DF;	
 	overflow: hidden;
@@ -73,6 +120,16 @@ button{
 
 
 .hurricane{
+	outline: none;
+	&:hover{
+		stroke: #606AD4 !important;
+		stroke-width: 2px !important;
+
+	}
+	&.selected{
+		stroke: #1F2ECC !important;
+		stroke-width: 2px !important;
+	}
 }
 
 table{
