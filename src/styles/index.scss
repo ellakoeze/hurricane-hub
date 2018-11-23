@@ -67,6 +67,7 @@ a{
 .row-wrapper{
 	display: flex;
 	width: 100%;
+	justify-content: space-between;
 }
 
 .form-wrapper{
@@ -94,12 +95,29 @@ a{
 }
 #text{
 	display: flex;
+	justify-content: space-between;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 5px;
+	width: 150px;
+	border: solid 1px $dark-blue;
+	display: flex;
+	align-items: center;
+	margin-left: 20px;
+	font-weight: 700;
+	color: $dark-blue;
 }
 
 #ex{
+	padding-bottom: 2px;
+	font-weight: 400;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 10px;
 	background-color: $white;
-	width: 20px;
-	height: 20px;
+	width: 17px;
+	height: 14px;
 	border-radius: 1em;
 	border: solid 1px $dark-blue;
 	text-align: center;	
@@ -121,6 +139,7 @@ a{
 
 .hurricane{
 	outline: none;
+	fill: #222;
 	&:hover{
 		stroke: #606AD4 !important;
 		stroke-width: 2px !important;

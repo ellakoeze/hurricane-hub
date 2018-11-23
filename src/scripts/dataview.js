@@ -34,7 +34,8 @@ class DataView extends React.Component {
                     data: this.state.data,
                     parent: '#lower-download-container'
                   });
-
+        this.mapSelection = this.mapSelection.bind(this);
+        this.clearFilter = this.clearFilter.bind(this);
         this.dataArrange();
 
   }
@@ -73,6 +74,15 @@ class DataView extends React.Component {
     });
     
     this.setState({data: data, direction: this.state.direction == 'ascending' ? 'descending' : 'ascending'});
+  }
+
+  mapSelection(storm){
+
+    let filtered = hurricanes.filter((d)=>{return d.id == storm;});
+    let filteredHurricanes =  hurricaneFeatures.filter((d)=>{return d.properties.ID2== storm;});
+    let filteredShapes = topojsonS.topology({hurricanes: {type: 'FeatureCollection', features: filteredHurricanes}});
+    this.setState({data: filtered, shapes: filteredShapes});
+
   }
 
   filter(){
@@ -147,10 +157,8 @@ class DataView extends React.Component {
               )
             ),
             e('button', {key: 'button', className: 'reset-button', onClick: ()=>this.clearFilter()}, 'Reset filters')
-          )
-        ),
-        e('div', {key: 'row-2',className: 'row-wrapper'}, 
-          e(ZoomMap, {key: 'map',shapes: this.state.shapes, countries: this.state.countries})
+          ),
+          e(ZoomMap, {key: 'map',shapes: this.state.shapes, countries: this.state.countries, select: this.mapSelection, clear: this.clearFilter})
         ),
         e('table', {key: 'table',className:"table"},
           e('thead', null,
@@ -164,7 +172,7 @@ class DataView extends React.Component {
               ])
           ),
           e('tbody', null,
-            e(Table,  {data: this.state.data})
+            e(Table,  {data: this.state.data, click: this.mapSelection})
           )
         )]
       )

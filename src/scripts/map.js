@@ -58,12 +58,12 @@ class ZoomMap extends React.Component {
     });
   }
 
-  hoverHurricane(storm) {
+  hoverHurricane(storm, name) {
     if (!this.hoverable){
       return;
     }
     let textDiv = document.getElementById('text');                              
-    textDiv.innerHTML= storm; 
+    textDiv.innerHTML= name; 
 
   }
 
@@ -77,10 +77,12 @@ class ZoomMap extends React.Component {
 
   }
 
-  clickHurricane(storm) { 
+  clickHurricane(storm, name) { 
+    console.log('click');
     document.getElementById(storm).classList.add('selected');
     let textDiv = document.getElementById('text');                              
-    textDiv.innerHTML= storm +'<div id="ex" >X</div>';
+    textDiv.innerHTML= name +'<div id="ex" >x</div>';
+    this.props.select(storm);
 
     this.hoverable = false;
     this.clearSelection();
@@ -93,6 +95,7 @@ class ZoomMap extends React.Component {
       textDiv.innerHTML= ''; 
       this.hoverable = true;
       document.getElementsByClassName('selected')[0].classList.remove('selected');
+      this.props.clear();
     });
   }
 
@@ -100,8 +103,8 @@ class ZoomMap extends React.Component {
     return(
       e('div', {id: 'map-wrap'} , null,
         e('div', {id: 'button-wrap'} , null,
-          e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomIn()}, "Zoom in"),
-          e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomOut()}, "Zoom out"),
+          e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomIn()}, "+"),
+          e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomOut()}, "-"),
           e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomOutAllTheWay()}, "Reset zoom"),
           e('div', {id: 'text'})),
         e('div', {id: 'map', onDoubleClick:()=>this.handleDoubleClick()},
@@ -154,8 +157,8 @@ class ZoomMap extends React.Component {
                         className: 'hurricane',
                         geography: geography,
                         projection: projection,
-                        onClick: ()=>this.clickHurricane(geography.properties.ID2),
-                        onMouseMove: ()=>this.hoverHurricane(geography.properties.ID2),
+                        onClick: ()=>this.clickHurricane(geography.properties.ID2, geography.properties.Name),
+                        onMouseMove: ()=>this.hoverHurricane(geography.properties.ID2, geography.properties.Name),
                         onMouseLeave: ()=>this.leaveHurricane(),
                         style:{
                           default: {
