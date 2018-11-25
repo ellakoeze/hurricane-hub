@@ -81,6 +81,18 @@ class ZoomMap extends React.Component {
     document.getElementById(storm).classList.add('selected');
     let textDiv = document.getElementById('text');
 
+    let buttons = document.getElementsByClassName('button-section');
+    for (let button of buttons){
+      button.classList.add('off');
+    }
+    document.getElementById('min-year').value = 1953;
+    document.getElementById('max-year').value = 2017;
+    document.getElementById('min-cat').value = 1;
+    document.getElementById('max-cat').value = 5;
+    document.getElementById('min-wind').value = 0;
+    document.getElementById('max-wind').value = 150;
+    document.querySelector(`.range.max-wind`).innerHTML = `150 mph`;
+    document.querySelector(`.range.min-wind`).innerHTML = `0 mph`;
 
     textDiv.innerHTML= name +'<div id="ex" >x</div>';                           
     this.props.select(storm);
@@ -97,6 +109,10 @@ class ZoomMap extends React.Component {
       this.hoverable = true;
       document.getElementsByClassName('selected')[0].classList.remove('selected');
       this.props.clear();
+      let buttons = document.getElementsByClassName('button-section');
+      for (let button of buttons){
+        button.classList.remove('off');
+      }
     });
   }
 

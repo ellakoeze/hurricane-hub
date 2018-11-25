@@ -87,6 +87,15 @@ class DataView extends React.Component {
 
   filter(){
 
+    let twenty17 = this.state.shapes.arcs.length;
+    let selected = document.getElementsByClassName('selected')[0];
+
+
+    if(selected || twenty17 ==0){
+      return;
+    }
+
+    
     ///collect all parameters here regardless of which one was last used!
     let minYear = document.getElementById('min-year').value;
     let maxYear = document.getElementById('max-year').value;
@@ -144,6 +153,11 @@ class DataView extends React.Component {
     document.getElementById('max-wind').value = 150;
     document.querySelector(`.range.max-wind`).innerHTML = `150 mph`;
     document.querySelector(`.range.min-wind`).innerHTML = `0 mph`;
+
+    let buttons = document.getElementsByClassName('button-section');
+    for (let button of buttons){
+      button.classList.remove('off');
+    }
     
   }
 

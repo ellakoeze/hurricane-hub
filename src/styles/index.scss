@@ -82,6 +82,9 @@ a{
 	display: flex;
 	padding-bottom: 12px;
 	border-bottom: 1px solid $white;
+	&.off{
+		pointer-events: none;
+	}
 }
 
 .button-label{
@@ -149,6 +152,7 @@ a{
 .hurricane{
 	outline: none;
 	fill: #222;
+	cursor: pointer;
 	&:hover{
 		stroke: #606AD4 !important;
 		stroke-width: 2px !important;
@@ -189,6 +193,7 @@ table{
 	}
 	tbody{
 		tr{
+			cursor: pointer;
 			&:hover{
 				td{
 					background-color: $dark-blue;

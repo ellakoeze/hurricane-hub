@@ -48,6 +48,19 @@ class Table extends React.Component {
       textDiv.innerHTML= '<p id="no-track">No track </p><div id="ex" >x</div>';    
       this.clear();
     }
+
+    let buttons = document.getElementsByClassName('button-section');
+    for (let button of buttons){
+      button.classList.add('off');
+    }
+    document.getElementById('min-year').value = 1953;
+    document.getElementById('max-year').value = 2017;
+    document.getElementById('min-cat').value = 1;
+    document.getElementById('max-cat').value = 5;
+    document.getElementById('min-wind').value = 0;
+    document.getElementById('max-wind').value = 150;
+    document.querySelector(`.range.max-wind`).innerHTML = `150 mph`;
+    document.querySelector(`.range.min-wind`).innerHTML = `0 mph`;
   }
 
   clear(){
@@ -60,6 +73,10 @@ class Table extends React.Component {
       }
       this.props.clear();
       this.table_hoverable = true;
+      let buttons = document.getElementsByClassName('button-section');
+      for (let button of buttons){
+        button.classList.remove('off');
+      }
     });
   }
 
