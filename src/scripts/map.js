@@ -78,10 +78,11 @@ class ZoomMap extends React.Component {
   }
 
   clickHurricane(storm, name) { 
-    console.log('click');
     document.getElementById(storm).classList.add('selected');
-    let textDiv = document.getElementById('text');                              
-    textDiv.innerHTML= name +'<div id="ex" >x</div>';
+    let textDiv = document.getElementById('text');
+
+
+    textDiv.innerHTML= name +'<div id="ex" >x</div>';                           
     this.props.select(storm);
 
     this.hoverable = false;

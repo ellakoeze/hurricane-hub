@@ -13,6 +13,7 @@ body {
 
 .section-1{
 	display: flex;
+	margin-bottom: 40px;
 }
 
 a{
@@ -107,6 +108,12 @@ a{
 	margin-left: 20px;
 	font-weight: 700;
 	color: $dark-blue;
+	#no-track{
+		margin-top: 0;
+		margin-bottom: 0;
+		font-weight: 400;
+		font-style: italic;
+	}
 }
 
 #ex{
@@ -135,6 +142,7 @@ a{
 	margin-bottom: 40px;
 	border: 2px $dark-blue solid;
 	height: 450px;
+	max-width: 800px;
 }
 
 
@@ -154,6 +162,7 @@ a{
 
 table{
 	border-collapse: collapse;
+	width: 100%;
 	th{
 		border-bottom: 1px solid black;
 		font-size: 12px;

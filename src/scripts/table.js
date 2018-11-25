@@ -20,19 +20,22 @@ class Row extends React.Component {
 class Table extends React.Component {
 	constructor(props) {
 	    super(props);
-      this.props = props;      
+      this.props = props;   
+
+      this.table_hoverable= true;   
 	  }
 
   createRows(){
 
     this.rows =[];
       for (var i=0; i<this.props.data.length; i++){
-        this.rows.push(e('tr', {id: `${this.props.data[i].id}-row`, className:"row", key: `row-${i}`, onClick: (e)=>this.select(e)},this.renderRow(i)));
+        this.rows.push(e('tr', {id: `${this.props.data[i].id}-row`, className:"row", key: `row-${i}`, onClick: (e)=>this.select(e), onMouseMove: (e)=>this.hover(e), onMouseLeave: (e)=>this.hoverOff(e)},this.renderRow(i)));
       }
   }
 
   select(e){
     let storm = e.target.classList[0];
+    this.table_hoverable = false;
     this.props.click(storm);
     let stormShape = document.querySelector(`.hurricane#${storm}`);
     let event = document.createEvent("SVGEvents");
@@ -40,7 +43,57 @@ class Table extends React.Component {
     if(stormShape){
       stormShape.dispatchEvent(event);
     }
+    else{
+      let textDiv = document.getElementById('text');
+      textDiv.innerHTML= '<p id="no-track">No track </p><div id="ex" >x</div>';    
+      this.clear();
+    }
   }
+
+  clear(){
+    let textDiv = document.getElementById('text');
+    document.getElementById('ex').addEventListener('click', ()=>{
+      textDiv.innerHTML= ''; 
+      let selectedStorm = document.getElementsByClassName('selected')[0];
+      if (selectedStorm){
+        selectedStorm.classList.remove('selected');
+      }
+      this.props.clear();
+      this.table_hoverable = true;
+    });
+  }
+
+  hover(e){
+    this.table_hoverable =document.getElementById('ex') ? false : true;
+    if(!this.table_hoverable){
+      return;
+    }
+    let storm = e.target.classList[0];
+    let stormShape = document.querySelector(`.hurricane#${storm}`);
+    let event = document.createEvent("SVGEvents");
+    event.initEvent("mousemove",true,true);
+    if(stormShape){
+      stormShape.classList.add('selected');
+      stormShape.dispatchEvent(event);
+    }
+    
+  }
+
+  hoverOff(e){
+    this.table_hoverable =document.getElementById('ex') ? false : true;
+    if(!this.table_hoverable){
+          return;
+    }
+    let textDiv = document.getElementById('text');
+    textDiv.innerHTML= ''; 
+    let storm = e.target.classList[0];
+    let stormShape = document.querySelector(`.hurricane#${storm}`);
+    if(stormShape){
+      stormShape.classList.remove('selected');
+    }
+    
+  }
+
 
   renderRow(i) {
     return e(Row,{
