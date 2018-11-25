@@ -85,14 +85,7 @@ class ZoomMap extends React.Component {
     for (let button of buttons){
       button.classList.add('off');
     }
-    document.getElementById('min-year').value = 1953;
-    document.getElementById('max-year').value = 2017;
-    document.getElementById('min-cat').value = 1;
-    document.getElementById('max-cat').value = 5;
-    document.getElementById('min-wind').value = 0;
-    document.getElementById('max-wind').value = 150;
-    document.querySelector(`.range.max-wind`).innerHTML = `150 mph`;
-    document.querySelector(`.range.min-wind`).innerHTML = `0 mph`;
+    this.props.reset();
 
     textDiv.innerHTML= name +'<div id="ex" >x</div>';                           
     this.props.select(storm);
@@ -119,6 +112,7 @@ class ZoomMap extends React.Component {
   render() {
     return(
       e('div', {id: 'map-wrap'} , null,
+        e('h3', null, 'Select a storm on the map'),
         e('div', {id: 'button-wrap'} , null,
           e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomIn()}, "+"),
           e('button', {className: 'zoom-button', onClick: ()=>this.handleZoomOut()}, "-"),

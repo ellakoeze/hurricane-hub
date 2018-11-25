@@ -5,13 +5,14 @@ const e = React.createElement;
 
 class Row extends React.Component {
   render() {
+    let rain = this.props.value.max_amount_rainfall ? (Math.round(this.props.value.max_amount_rainfall* 10)/10).toFixed(1) : '';
     return [
         e('td',  {key: 'name', className: this.props.value.id}, this.props.value.Name),
         e('td',{key: 'year', className: this.props.value.id}, this.props.value.Year),
         e('td',{key: 'month', className: this.props.value.id}, this.props.value.Month),
         e('td',{key: 'category', className: this.props.value.id}, this.props.value.Max_category_at_landfall),
         e('td',{key: 'wind', className: this.props.value.id}, this.props.value.Max_windspeed),
-        e('td',{key: 'rain', className: this.props.value.id}, (Math.round(this.props.value.max_amount_rainfall* 10)/10).toFixed(1))
+        e('td',{key: 'rain', className: this.props.value.id}, rain)
       ];
   }
 }
@@ -53,14 +54,7 @@ class Table extends React.Component {
     for (let button of buttons){
       button.classList.add('off');
     }
-    document.getElementById('min-year').value = 1953;
-    document.getElementById('max-year').value = 2017;
-    document.getElementById('min-cat').value = 1;
-    document.getElementById('max-cat').value = 5;
-    document.getElementById('min-wind').value = 0;
-    document.getElementById('max-wind').value = 150;
-    document.querySelector(`.range.max-wind`).innerHTML = `150 mph`;
-    document.querySelector(`.range.min-wind`).innerHTML = `0 mph`;
+    this.props.reset();
   }
 
   clear(){

@@ -66,15 +66,22 @@ a{
 
 }
 
+
+.reset-button{
+	margin-top: 12px;
+}
 .row-wrapper{
 	display: flex;
 	width: 100%;
 	justify-content: space-between;
+	@media only screen and (max-width: 1024px) {
+	    display: block;
+
+	}
 }
 
 .form-wrapper{
 	display:block;
-	width: 50%;
 	margin-bottom: 40px;
 }
 
@@ -84,6 +91,11 @@ a{
 	border-bottom: 1px solid $white;
 	&.off{
 		pointer-events: none;
+		select{
+			color: #999999 !important;
+			border: 1px solid #999 !important;
+		}
+		
 	}
 }
 
@@ -139,6 +151,12 @@ a{
 		color: $white;
 	}
 }
+#map-wrap{
+	width: 60%;
+	@media only screen and (max-width: 1024px) {
+	    width: 100%;
+	}
+}
 #map{
 	background-color: #FFF0DF;	
 	overflow: hidden;
@@ -161,6 +179,7 @@ a{
 	&.selected{
 		stroke: #1F2ECC !important;
 		stroke-width: 2px !important;
+		stroke-linecap: round;
 	}
 }
 
@@ -184,12 +203,11 @@ table{
 		}
 	}
 	td{
-		border-right: 1px $body-color solid;
-		border-bottom: 1px $body-color solid;
+		border: 1px $white solid;
 		width: 10%;
 		max-width: 200px;
 		padding: 5px;
-		background-color: $white;
+		background-color: $body-color;
 	}
 	tbody{
 		tr{

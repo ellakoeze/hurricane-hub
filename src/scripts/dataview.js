@@ -103,6 +103,8 @@ class DataView extends React.Component {
     let maxCat = document.getElementById('max-cat').value;
     let minWind = document.getElementById('min-wind').value;
     let maxWind = document.getElementById('max-wind').value;
+    let minRain = document.getElementById('min-rain').value;
+    let maxRain = document.getElementById('max-rain').value;
 
     //starting variables
     let filtered;
@@ -114,8 +116,9 @@ class DataView extends React.Component {
     filtered = filtered.filter((d)=>{return d.Year <= maxYear;});
     filtered = filtered.filter((d)=>{return d.Max_category_at_landfall <= maxCat;});
     filtered = filtered.filter((d)=>{return d.Max_category_at_landfall >= minCat;});
-    filtered = filtered.filter((d)=>{return d.Max_windspeed <= maxWind;});
-    filtered = filtered.filter((d)=>{return d.Max_windspeed >= minWind;});
+    filtered = filtered.filter((d)=>{return +d.Max_windspeed <= maxWind;});
+    filtered = filtered.filter((d)=>{return +d.Max_windspeed >= minWind;});
+    filtered = filtered.filter((d)=>{return +d.max_amount_rainfall >= minRain && +d.max_amount_rainfall <= maxRain;});
 
     //run all filters on map data, starting with full set
     filteredHurricanes =  hurricaneFeatures.filter((d)=>{return +d.properties.Year >= minYear;});
@@ -123,6 +126,7 @@ class DataView extends React.Component {
     filteredHurricanes =  filteredHurricanes.filter((d)=>{return +d.properties.Max_catego<= maxCat;});
     filteredHurricanes =  filteredHurricanes.filter((d)=>{return +d.properties.Max_catego>= minCat;});
     filteredHurricanes =  filteredHurricanes.filter((d)=>{ return (+d.properties.Max_windsp<= maxWind && +d.properties.Max_windsp>= minWind);});
+    filteredHurricanes =  filteredHurricanes.filter((d)=>{ return (+d.properties.max_amount<= maxRain && +d.properties.max_amount>= minRain);});
 
     //send filtered data to download button
     this.download.update(filtered);
@@ -145,14 +149,7 @@ class DataView extends React.Component {
       selected.classList.remove('selected');
     }
 
-    document.getElementById('min-year').value = 1953;
-    document.getElementById('max-year').value = 2017;
-    document.getElementById('min-cat').value = 1;
-    document.getElementById('max-cat').value = 5;
-    document.getElementById('min-wind').value = 0;
-    document.getElementById('max-wind').value = 150;
-    document.querySelector(`.range.max-wind`).innerHTML = `150 mph`;
-    document.querySelector(`.range.min-wind`).innerHTML = `0 mph`;
+    this.resetFilter();
 
     let buttons = document.getElementsByClassName('button-section');
     for (let button of buttons){
@@ -161,10 +158,26 @@ class DataView extends React.Component {
     
   }
 
+  resetFilter(){
+    document.getElementById('min-year').value = 1953;
+    document.getElementById('max-year').value = 2017;
+    document.getElementById('min-cat').value = 1;
+    document.getElementById('max-cat').value = 5;
+    document.getElementById('min-wind').value = 0;
+    document.getElementById('max-wind').value = 150;
+    document.querySelector(`.range.max-wind`).innerHTML = `150 mph`;
+    document.querySelector(`.range.min-wind`).innerHTML = `0 mph`;
+    document.getElementById('min-rain').value = 0;
+    document.getElementById('max-rain').value = 65;
+    document.querySelector(`.range.max-rain`).innerHTML = `65 in`;
+    document.querySelector(`.range.min-rain`).innerHTML = `0 in`;
+
+  }
+
   rangeChange(param){
     this.filter();
 
-    let suffix = param == 'min-wind' || param =='max-wind' ? 'mph' : '';
+    let suffix = param == 'min-wind' || param =='max-wind' ? 'mph' : 'in';
     let val = document.getElementById(param).value;
     document.querySelector(`.range.${param}`).innerHTML = `${val} ${suffix}`;
 
@@ -176,6 +189,7 @@ class DataView extends React.Component {
       e('div', {className:"data-view"},[
         e('div', {key: 'row-1',className: 'row-wrapper'}, 
           e('div',{key: 'form-wrapper', className: 'form-wrapper'},
+            e('h3', null, 'Filter storms by attributes'),
             e('div', {key: 'button-section-1', className: 'button-section'}, 
               e('div', {key: 'button-wrap-1'}, 
                 e('p', {key: 'label-1', className: 'button-label'}, 'Earliest year'),
@@ -216,10 +230,27 @@ class DataView extends React.Component {
                 )
               )
             ),
+            e('div', {key: 'button-section-4', className: 'button-section'}, 
+              e('div', {key: 'button-wrap-1'}, 
+                e('p', {key: 'label-1', className: 'button-label'}, 'Minimum rainfall'),
+                e('div', {},
+                  e('input', {key: 'select-1', type: 'range', min: 0, max: 65, defaultValue: 0, id: 'min-rain', className: 'range', onChange: (event)=>this.rangeChange('min-rain')}),
+                  e('div', {className: 'range min-rain'}, '0 in')
+                )
+              ),
+              e('div', {key: 'button-wrap-2'}, 
+                e('p', {key: 'label-2', className: 'button-label'}, 'Maximum rainfall'),
+                e('div', {},
+                  e('input', {key: 'select-2', type: 'range', min: 0, max: 65, id: 'max-rain', defaultValue: 65, className: 'range', onChange: (event)=>this.rangeChange('max-rain')}),
+                  e('div', {className: 'range max-rain'}, '65 in')
+                )
+              )
+            ),
             e('button', {key: 'button', className: 'reset-button', onClick: ()=>this.clearFilter()}, 'Reset')
           ),
-          e(ZoomMap, {key: 'map',shapes: this.state.shapes, countries: this.state.countries, select: this.mapSelection, clear: this.clearFilter})
+          e(ZoomMap, {key: 'map',shapes: this.state.shapes, countries: this.state.countries, select: this.mapSelection, clear: this.clearFilter, reset: this.resetFilter})
         ),
+        e('h3', null, 'Select a storm from the table'),
         e('table', {key: 'table',className:"table"},
           e('thead', null,
               e('tr',null,[
@@ -232,7 +263,7 @@ class DataView extends React.Component {
               ])
           ),
           e('tbody', null,
-            e(Table,  {data: this.state.data, click: this.mapSelection, clear:this.clearFilter })
+            e(Table,  {data: this.state.data, click: this.mapSelection, clear:this.clearFilter, reset: this.resetFilter })
           )
         )]
       )
