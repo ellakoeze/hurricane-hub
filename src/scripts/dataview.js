@@ -187,7 +187,7 @@ class DataView extends React.Component {
 
   rangeChange(param){
     this.filter();
-    let suffix = param == 'min-wind' || param =='max-wind' ? 'mph' : 'in';
+    let suffix = param == 'min-wind' || param =='max-wind' ? 'knots' : 'in';
     let val = document.getElementById(param).value;
     document.querySelector(`.range.${param}`).innerHTML = `${val} ${suffix}`;
 
@@ -222,42 +222,42 @@ class DataView extends React.Component {
               )
             ),
             e('div', {key: 'button-section-2', className: 'button-section'}, 
-              e('div', {key: 'button-wrap-1'}, 
+              e('div', {key: 'button-wrap-1', className: 'button-wrap'}, 
                 e('p', {key: 'label-1', className: 'button-label'}, 'Minimum category'),
                 e('select', {key: 'select-1', id: 'min-cat', className: 'select', onChange: (event)=>this.filter()}, 
                   e(Options, {data: [1,2,3,4,5]}))
               ),
-              e('div', {key: 'button-wrap-2'}, 
+              e('div', {key: 'button-wrap-2', className: 'button-wrap'}, 
                 e('p', {key: 'label-2', className: 'button-label'}, 'Maximum category'),
                 e('select', {key: 'select-2', id: 'max-cat', className: 'select', onChange: (event)=>this.filter()}, 
                   e(Options, {data: [5,4,3,2,1]}))
               )
             ),
             e('div', {key: 'button-section-3', className: 'button-section'}, 
-              e('div', {key: 'button-wrap-1'}, 
+              e('div', {key: 'button-wrap-1', className: 'button-wrap'}, 
                 e('p', {key: 'label-1', className: 'button-label'}, 'Minimum windspeed'),
                 e('div', {},
                   e('input', {key: 'select-1', type: 'range', min: 0, max: 150, defaultValue: 0, id: 'min-wind', className: 'range', onChange: (event)=>this.rangeChange('min-wind')}),
-                  e('div', {className: 'range min-wind'}, '0 mph')
+                  e('div', {className: 'range min-wind'}, '0 knots')
                 )
               ),
-              e('div', {key: 'button-wrap-2'}, 
+              e('div', {key: 'button-wrap-2', className: 'button-wrap'}, 
                 e('p', {key: 'label-2', className: 'button-label'}, 'Maximum windspeed'),
                 e('div', {},
                   e('input', {key: 'select-2', type: 'range', min: 0, max: 150, id: 'max-wind', defaultValue: 150, className: 'range', onChange: (event)=>this.rangeChange('max-wind')}),
-                  e('div', {className: 'range max-wind'}, '150 mph')
+                  e('div', {className: 'range max-wind'}, '150 knots')
                 )
               )
             ),
             e('div', {key: 'button-section-4', className: 'button-section'}, 
-              e('div', {key: 'button-wrap-1'}, 
+              e('div', {key: 'button-wrap-1', className: 'button-wrap'}, 
                 e('p', {key: 'label-1', className: 'button-label'}, 'Minimum rainfall'),
                 e('div', {},
                   e('input', {key: 'select-1', type: 'range', min: 0, max: 65, defaultValue: 0, id: 'min-rain', className: 'range', onChange: (event)=>this.rangeChange('min-rain')}),
                   e('div', {className: 'range min-rain'}, '0 in')
                 )
               ),
-              e('div', {key: 'button-wrap-2'}, 
+              e('div', {key: 'button-wrap-2', className: 'button-wrap'}, 
                 e('p', {key: 'label-2', className: 'button-label'}, 'Maximum rainfall'),
                 e('div', {},
                   e('input', {key: 'select-2', type: 'range', min: 0, max: 65, id: 'max-rain', defaultValue: 65, className: 'range', onChange: (event)=>this.rangeChange('max-rain')}),
@@ -277,7 +277,7 @@ class DataView extends React.Component {
                 e('th', {key: 'year', id:'Year', className: 'active', onClick: ()=>this.sort('Year')}, 'Year'),
                 e('th',{key: 'month', id: 'Month', onClick: ()=>this.sort('Month')}, 'Month'),
                 e('th',{key: 'cat', id: 'Max_category_at_landfall', onClick: ()=>this.sort('Max_category_at_landfall')}, 'Max. category at landfall'),
-                e('th',{key: 'wind', id: 'Max_windspeed', onClick: ()=>this.sort('Max_windspeed')}, 'Max. windspeed (mph)'),
+                e('th',{key: 'wind', id: 'Max_windspeed', onClick: ()=>this.sort('Max_windspeed')}, 'Max. windspeed (knots)'),
                 e('th',{key: 'rain', id: 'max_amount_rainfall', onClick: ()=>this.sort('max_amount_rainfall')}, 'Max. rainfall (in)')
               ])
           ),

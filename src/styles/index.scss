@@ -14,6 +14,7 @@ body {
 .section-1{
 	display: flex;
 	margin-bottom: 40px;
+	margin-top: 40px;
 }
 
 a{
@@ -83,6 +84,9 @@ a{
 .form-wrapper{
 	display:block;
 	margin-bottom: 40px;
+	width: 35%;
+	margin-right: 20px;
+
 }
 .check-wrap{
 	display: flex;
@@ -100,11 +104,14 @@ a{
 
 .button-section{
 	display: flex;
+	justify-content: space-between;
 	padding-bottom: 12px;
 	border-bottom: 1px solid $white;
-	div{
-		width: 150px;
-		margin-right: 15px;
+	.button-wrap{
+		width: 48%;
+		.range{
+			width: 90%;
+		}
 	}
 	&.off{
 		pointer-events: none;
@@ -206,6 +213,10 @@ a{
 table{
 	border-collapse: collapse;
 	width: 100%;
+	margin-bottom: 60px;
+	@media only screen and (max-width: 1024px) {
+	    font-size: 12px;
+	}
 	th{
 		border-bottom: 1px solid black;
 		font-size: 12px;
@@ -213,6 +224,9 @@ table{
 		font-weight: 400;
 		cursor: pointer;
 		padding: 3px;
+		@media only screen and (max-width: 1024px) {
+		    font-size: 10px;
+		}
 		&:hover{
 			background-color: $dark-blue;
 			color: $white;
@@ -241,4 +255,11 @@ table{
 		}
 	}
 
+}
+
+.actual-link{
+	color: #f0f;
+	&:hover{
+		text-decoration: underline;
+	}
 }

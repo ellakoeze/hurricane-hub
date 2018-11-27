@@ -9,9 +9,10 @@ class ZoomMap extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;  
+    let center = this.is_mobile ? [40, 10] : [0,10];
     this.state = {
       zoom: 1.5,
-      center: [0,10],
+      center: center,
       panning: false
     };
 
@@ -51,6 +52,7 @@ class ZoomMap extends React.Component {
 
   handleZoomOutAllTheWay() {
     let newCenter = this.state.center[1] == 10 ? [0,9] :[0,10];
+    newCenter = this.is_mobile && this.state.center[1] == 10 ? [40, 9] : [40, 9];
     this.setState({
       zoom: 1.5,
       center: newCenter,
@@ -107,6 +109,10 @@ class ZoomMap extends React.Component {
         button.classList.remove('off');
       }
     });
+  }
+
+  get is_mobile() {
+    return screen.width < 1024;
   }
 
   render() {
