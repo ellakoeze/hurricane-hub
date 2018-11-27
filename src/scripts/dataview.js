@@ -26,7 +26,8 @@ class DataView extends React.Component {
           }),
           direction: 'ascending',
           shapes: hurricaneShapes,
-          countries: countryShapes
+          countries: countryShapes,
+          checked: true
         };
 
         this.download = new DownloadCSV({
@@ -88,14 +89,16 @@ class DataView extends React.Component {
   filter(){
 
     let twenty17 = this.state.shapes.arcs.length;
+    let ex = document.getElementById('ex');
     let selected = document.getElementsByClassName('selected')[0];
 
 
-    if(selected || twenty17 ==0){
+    if(selected || (twenty17 ==0 && ex)){
       return;
     }
 
-    
+    let missing = document.getElementById('check').checked;
+
     ///collect all parameters here regardless of which one was last used!
     let minYear = document.getElementById('min-year').value;
     let maxYear = document.getElementById('max-year').value;
@@ -116,6 +119,10 @@ class DataView extends React.Component {
     filtered = filtered.filter((d)=>{return d.Year <= maxYear;});
     filtered = filtered.filter((d)=>{return d.Max_category_at_landfall <= maxCat;});
     filtered = filtered.filter((d)=>{return d.Max_category_at_landfall >= minCat;});
+    if(!missing){
+      filtered = filtered.filter((d)=>{return d.Max_windspeed;});
+      filtered = filtered.filter((d)=>{return d.max_amount_rainfall;});
+    }
     filtered = filtered.filter((d)=>{return +d.Max_windspeed <= maxWind;});
     filtered = filtered.filter((d)=>{return +d.Max_windspeed >= minWind;});
     filtered = filtered.filter((d)=>{return +d.max_amount_rainfall >= minRain && +d.max_amount_rainfall <= maxRain;});
@@ -125,6 +132,10 @@ class DataView extends React.Component {
     filteredHurricanes =  filteredHurricanes.filter((d)=>{return +d.properties.Year <= maxYear;});
     filteredHurricanes =  filteredHurricanes.filter((d)=>{return +d.properties.Max_catego<= maxCat;});
     filteredHurricanes =  filteredHurricanes.filter((d)=>{return +d.properties.Max_catego>= minCat;});
+    if(!missing){
+      filteredHurricanes = filteredHurricanes.filter((d)=>{return d.properties.Max_windsp;});
+      filteredHurricanes = filteredHurricanes.filter((d)=>{return d.properties.max_amount;});
+    }
     filteredHurricanes =  filteredHurricanes.filter((d)=>{ return (+d.properties.Max_windsp<= maxWind && +d.properties.Max_windsp>= minWind);});
     filteredHurricanes =  filteredHurricanes.filter((d)=>{ return (+d.properties.max_amount<= maxRain && +d.properties.max_amount>= minRain);});
 
@@ -176,12 +187,16 @@ class DataView extends React.Component {
 
   rangeChange(param){
     this.filter();
-
     let suffix = param == 'min-wind' || param =='max-wind' ? 'mph' : 'in';
     let val = document.getElementById(param).value;
     document.querySelector(`.range.${param}`).innerHTML = `${val} ${suffix}`;
 
 
+  }
+
+  checkChange(){
+    this.filter();
+    this.state.checked = this.state.checked ? false :true;
   }
 
   render() {
@@ -190,6 +205,10 @@ class DataView extends React.Component {
         e('div', {key: 'row-1',className: 'row-wrapper'}, 
           e('div',{key: 'form-wrapper', className: 'form-wrapper'},
             e('h3', null, 'Filter storms by attributes'),
+            e('div', {key: 'button-wrap-3', className: 'check-wrap'},
+              e('input', {key: 'check-1', type:"checkbox", id:'check', checked: this.state.checked, onChange: (event)=>this.checkChange()}),
+              e('div', {key: 'check-1-label', className:'check-name'}, 'Include storms with missing values?')
+            ),
             e('div', {key: 'button-section-1', className: 'button-section'}, 
               e('div', {key: 'button-wrap-1'}, 
                 e('p', {key: 'label-1', className: 'button-label'}, 'Earliest year'),
@@ -250,7 +269,7 @@ class DataView extends React.Component {
           ),
           e(ZoomMap, {key: 'map',shapes: this.state.shapes, countries: this.state.countries, select: this.mapSelection, clear: this.clearFilter, reset: this.resetFilter})
         ),
-        e('h3', null, 'Select a storm from the table'),
+        e('h3', {key: 'table-hed'}, 'Select a storm from the table'),
         e('table', {key: 'table',className:"table"},
           e('thead', null,
               e('tr',null,[
